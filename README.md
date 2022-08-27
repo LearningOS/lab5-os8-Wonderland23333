@@ -3,10 +3,10 @@
 
 Welcome to Open-Source OS Training Comp 2022（2022年开源操作系统训练营）.
 ## Scheduling
-- NOTICE current [**Stage1 SCHEDULING**](./scheduling.md) & [**Stage2 SCHEDULING**](./stage2-sched.md)（2022年开源操作系统训练营的第一/二阶段安排）!
+- NOTICE current [**SCHEDULING**](./scheduling.md)（2022年开源操作系统训练营的计划安排）!
 - [News](./news.md)（2022年开源操作系统训练营的新闻和纪要）
 - [QA](./QA.md)（常见问题解答）
-- [Online Ranking](https://learningos.github.io/classroom-grading/)（训练营在线排行榜）
+- [Online Ranking](https://os2edu.cn/grading/)（训练营在线排行榜）
 ## History
 - [open-source  os training comp 2021](https://github.com/rcore-os/rCore/wiki/os-tutorial-summer-of-code-2021)
 - [open-source  os training  comp 2020](https://github.com/rcore-os/rCore/wiki/os-tutorial-summer-of-code-2020)

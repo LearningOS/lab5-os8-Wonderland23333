@@ -22,13 +22,10 @@
 ## 日程：第二~第四周：操作系统研究与探索项目 (34天)
 目前设置了多个项目，学生可选择参加下面的项目，指导老师制定以周为单位的项目研究计划。
 
-**注意：参加操作系统研究与探索项目的前提先完成第一阶段的实验要求（写了总结报告，完成了lab0~lab5的实验），为此，晚了一些时间是可以的** 
-
 #### 模块化的 rCore-Tutorial-v3
 
 1. 项目标题：模块化的 rCore-Tutorial-v3
-2. [模块化的 rCore-Tutorial-v3: GitHub Classroom](https://classroom.github.com/a/Oc792plB)
-3. 项目描述：rCore-Tutorial-v3 是一套简洁，易于上手的教程，但是目前代码将不同章节用分支隔离的组织形式导致前一章实验的成果很难迁移到后一章，且若要修改某一章的实现，就需要手动同步到后续所有章节。我们希望能发挥 Rust 语言 workspace/crates/traits 的先进设计理念，重构并形成模块化rCore-Tutorial，将学习时对仓库的操作变为以下形式：
+2. 项目描述：rCore-Tutorial-v3 是一套简洁，易于上手的教程，但是目前代码将不同章节用分支隔离的组织形式导致前一章实验的成果很难迁移到后一章，且若要修改某一章的实现，就需要手动同步到后续所有章节。我们希望能发挥 Rust 语言 workspace/crates/traits 的先进设计理念，重构rCore-Tutorial，将学习时对仓库的操作变为以下形式：
 
    | 操作          | 使用 git 分支        | 使用 crate
    | ------------ | ------------------- | ---------------
@@ -37,39 +34,37 @@
 
    这样操作系统将以模块化/Traits的形式呈现给同学，同学按照模块化/Traits实现的方法来完成实验。实验的内容也可随之灵活调整。
 
-4. 项目难度：中（适合完成了lab1-5，熟悉 Rust workspace/crates/traits 的同学）
-5. 项目社区导师：杨德睿 github id:YdrMaster weichat id: ydrdwx ； 许善朴 github id: xushanpu123   weichat id: bitmeet520
-6. 项目产出要求：
+3. 项目难度：中（适合完成了lab1-5，熟悉 Rust workspace/crates/traits 的同学）
+4. 项目社区导师：杨德睿 github id:YdrMaster weichat id: ydrdwx ； 许善朴 github id: xushanpu123   weichat id: bitmeet520
+5. 项目产出要求：
 
    项目应该将现有的 rCore-Tutorial-v3 变得模块化。形式包括：
    - 章节模块化：所有章节不再被 git 分支隔离开，而是只有逻辑上的隔离关系，后一章节能够以依赖库的形式继承前一章节的成果
    - 实现模块化：能在所有章节中复用的代码形成单独的 crate 甚至 package，crates之间在调用方面有层次依赖关系, crates的粒度尽量小。
    - 系统调用接口模块化：系统调用的分发封装到一个 crate。使得添加系统调用的模式不是为某个 match 增加分支，而是实现一个分发库要求的 trait 并将实例传递给分发库
 
-7. 相关的开源软件仓库列表：
+8. 相关的开源软件仓库列表：
    - https://github.com/theseus-os/Theseus （OS的目标不同，但在OS的设计上有部分内容与此相近）
 
       Theseus is a modern OS written from scratch in Rust that explores 𝐢𝐧𝐭𝐫𝐚𝐥𝐢𝐧𝐠𝐮𝐚𝐥 𝐝𝐞𝐬𝐢𝐠𝐧, novel OS structure, and state management. It strives to close the semantic gap between compiler and hardware to maximally leverage the power of language safety, and thus shift OS responsibilities like resource management into the compiler.
 
 ### rCore-Tutorial-v3 进一步进阶/扩展
 1. 项目标题：rCore-Tutorial-v3 进一步扩展
-2. [rCore-Tutorial-v3 进一步扩展 rCore-Tutorial-v3: GitHub Classroom](https://classroom.github.com/a/bAc-5319)
-3. 项目描述：rCore-Tutorial-v3 的一个重要目标是以简洁的设计实现对应到操作系统的核心知识点上，所以还有很多可以扩展的地方。我们希望通过设计一个一个相对独立的实验，来展现操作系统的核心设计思想，在操作系统实现与操作系统原理之间建立桥梁。学生自己设计实现新OS功能后，其系统能力也随之提高。简言之：做多，错多，收获多
-4. 项目难度：低/中 （适合完成了lab1-5，且希望能够一小步一小步地继续提升自己OS编程能力/系统能力的同学）
-5. 项目社区导师：陈渝 github id: chyyuu     weichat id: chyyuu 
-6. 项目社区导师：吴一凡 github id: wyfcyx     weichat id: yifanwu1998
-7. 项目社区导师：许善朴 github id: xushanpu123   weichat id: bitmeet520
-8. 项目社区导师：杨德睿 github id:YdrMaster  weichat id: ydrdwx 
-9. 项目社区导师：陈乐 github id: yuoo655    weichat id: Endagorion_
-10. 项目产出要求：
+2. 项目描述：rCore-Tutorial-v3 的一个重要目标是以简洁的设计实现对应到操作系统的核心知识点上，所以还有很多可以扩展的地方。我们希望通过设计一个一个相对独立的实验，来展现操作系统的核心设计思想，在操作系统实现与操作系统原理之间建立桥梁。学生自己设计实现新OS功能后，其系统能力也随之提高。简言之：做多，错多，收获多
+3. 项目难度：低/中 （适合完成了lab1-5，且希望能够一小步一小步地继续提升自己OS编程能力/系统能力的同学）
+4. 项目社区导师：陈渝 github id: chyyuu     weichat id: chyyuu 
+5. 项目社区导师：吴一凡 github id: wyfcyx     weichat id: yifanwu1998
+6. 项目社区导师：许善朴 github id: xushanpu123   weichat id: bitmeet520
+7. 项目社区导师：杨德睿 github id:YdrMaster  weichat id: ydrdwx 
+8. 项目产出要求：
    - 补充完善 rCore-Tutorial-v3
 
-11. 项目技术要求：
+9. 项目技术要求：
    - 具备一定的 Rust 语言基础，能看懂并模仿现有代码即可
    - 熟悉操作系统原理与简易实现
    - 具有基础英文阅读和写作能力
 
-11. 相关的开源软件仓库列表：
+10. 相关的开源软件仓库列表：
   - https://github.com/rcore-os/rCore-Tutorial-v3
   - https://rcore-os.github.io/rCore-Tutorial-Book-v3/final-lab.html
 
@@ -77,11 +72,6 @@
       - 选择1：内核支持中断响应 --> 内核支持 读取设备树，支持virtio外设，支持串口外设 （rcore tutorial v3的ch9已经完成） --> 内核支持多核结构  --> 内核支持Linux syscall（即支持Linux应用）
       - 选择2：内核支持中断响应 --> 内核支持 读取设备树，支持virtio外设，支持串口外设 --> 图形界面支持 （rcore tutorial v3的ch9已经完成） --> 改进图形界面支持
       - 选择3：内核支持中断响应 --> 内核支持 读取设备树，支持virtio外设，支持串口外设 （rcore tutorial v3的ch9已经完成） --> 实现对TUI界面的支持（即可以在字符界面实现窗口界面和各种基于TUI界面的游戏）
-
-选择2/3的OS参考
-
-- [带TUI界面的Lateral OS](https://github.com/carterisonline/lateral)
-- [有snake/2048图形界面游戏的SnakeOS](https://github.com/trusch/snakeos)
 
 ### 操作系统课程的有趣大实验
 1. 项目标题：操作系统课程的有趣大实验
@@ -105,42 +95,14 @@
   - [基于x86_64的rCore-Tutorial-v3](https://github.com/rcore-os/rCore-Tutorial-v3-x86_64)
   - [基于AARCH64的rCore-Tutorial-v3](https://github.com/rcore-os/rCore-Tutorial-v3-arm64)
   - rCore-Tutorial-v3/zCore直接支持Rust std标准库：已完成的本科毕设，有初步结果
-### 异步操作系统
-1. 项目标题：异步操作系统设计和完善
-2. 项目描述：在RISC-V平台上设计并实现一个基于Rust语言的异步操作系统。最终目标是，利用Rust语言和开源工具链的特征，在操作系统内核中实现细粒度的并发安全、模块化和可定制特征；利用Rust语言的异步机制，优化操作系统内核的并发性能；向应用程序提供的异步系统调用接口，优化操作系统的系统调用访问性能；结合LLVM中Rust语言编译器的异步支持技术，完善操作系统的进程、线程和协程概念，统一进程、线程和协程的调度机制；利用RISC-V平台的用户态中断技术，优化操作系统的信号和进程通信性能；开发原型系统，设计用户态测试用例库和操作系统动态分析跟踪工具，对异步操作系统的特征进行定量性的评估。
-3. 项目难度：中/高 （适合完成了lab1-5，并希望能够较快进入更实际一些的OS能力训练或做OS方向研究的同学）
-4. 项目社区导师：向勇 github id: xyongcn     weichat id: xyongcn 
-5. 项目产出要求：
-   - 参与正在进行的异步操作系统开发项目，提供力所能及改进和完善；
-   - 针对异步操作系统中还没有开工的模块，提供初始的参考实现；
-6. 项目技术要求：
-   - 具备一定的 Rust 语言基础，能看懂并模仿现有代码即可
-   - 熟悉操作系统原理与简易实现
-   - 具有基础英文阅读和写作能力
-
-7. 已有相关工作：
-  - [异步操作系统设计](https://github.com/async-kernel/documents/blob/main/design/design.md)
-  - 用户态中断扩展
-      - 尤予阳，[软硬协同的用户态中断](https://gallium70.github.io/rv-n-ext-impl/intro.html)：RISC-V的用户态中断规范建议；
-      - [软硬协同的用户态中断机制研究](https://github.com/Gallium70/final-project/blob/master/论文.pdf)：本科毕设论文；
-      - 王之栋、项晨东、孙迅，[基于Intel x86用户态中断的高效进程间通信](https://github.com/OS-F-4/usr-intr/blob/main/ppt/2022-6-11.pptx)：Intel用户态中断的QEMU支持、基于用户态中断的异步系统调用实现
-  - 内核模块的异步通信框架：
-      - 吴一凡，[Async-modules extension of zCore](https://github.com/wyfcyx/zCore/tree/async-modules)：异步模块间的通信框架实现；
-  - 用户态的异步支持库：
-      - 车春池，[基于Rust的io-uring实现](https://github.com/SKTT1Ryze/Graduation2022/releases/download/v0.1.0/thesis.pdf)：Rust和C++的异步支持库，本科毕设论文；
-  - 异步操作系统调度
-      - 车春池、蒋周奇：共享调度器 https://github.com/HUST-OS/tornado-os#如何运行
-      - 刘松铭、于子淳：[zCore多核异步调度器](https://github.com/OSLab-zCore/OSLab-Docs)
-      - 王文智：[线程与协程的统一调度](https://github.com/AmoyCherry/UnifieldScheduler/blob/02f3d17cafd6b3ca4091df6a47798f67a44e7788/%E5%BC%82%E6%AD%A5OS%E8%AE%BE%E8%AE%A1%E6%96%87%E6%A1%A3.md)
 ### zCore 的文档与单元测试完善
 
 1. 项目标题：zCore 的文档与单元测试完善
-2. [zCore 的文档与单元测试完善](https://github.com/LearningOS/zCore)（注：由于有Github LFS，不能设置为classroom）
-3. 项目描述：zCore 是用 Rust 实现的支持协程/异步等新机制的操作系统，目前zCore的实现已经初步支持 x86_64/RISC-V 64/AArch64。然而，随着后期开发进程的加快，大量代码缺少文档描述，并且没有实现单元测试，只能在 QEMU 中运行用户程序以检验代码正确性。本项目的目标是完善 zCore 的文档及单元测试，使其成为一个高质量的 Rust 社区项目。
-4. 项目难度：低 （适合完成了lab1-5，并希望在OS领域找到一份测试/研发工作，或提升软件工程能力的同学）
-5. 项目社区导师：石振兴  github id: shzhxh    weichat id: szx-bj
-6. 项目社区导师：董峰  github id: workerwork  weichat id: Mr_dong-feng
-7. 项目产出要求：
+2. 项目描述：zCore 是用 Rust 实现的支持协程/异步等新机制的操作系统，目前zCore的实现已经初步支持 x86_64/RISC-V 64/AArch64。然而，随着后期开发进程的加快，大量代码缺少文档描述，并且没有实现单元测试，只能在 QEMU 中运行用户程序以检验代码正确性。本项目的目标是完善 zCore 的文档及单元测试，使其成为一个高质量的 Rust 社区项目。
+3. 项目难度：低 （适合完成了lab1-5，并希望在OS领域找到一份测试/研发工作，或提升软件工程能力的同学）
+4. 项目社区导师：石振兴  github id: shzhxh    weichat id: szx-bj
+5. 项目社区导师：董峰  github id: workerwork  weichat id: Mr_dong-feng
+6. 项目产出要求：
    - 补充完善 zCore 各模块的代码文档。
 
      目标是通过 `#![deny(missing_docs)]` 编译，并且能够让开发者通过阅读文档，快速理解 zCore 的代码结构和各部分功能。
@@ -152,11 +114,11 @@
    - （可选）在zCore中添加zircon/linux的syscall。
      目标：完善添加zCore内核功能，让zCore通过更多的zircon tests(基于zircon的coretest)或Linux tests（基于musl libc的libc test）或相关应用
 
-8. 项目技术要求：
+7. 项目技术要求：
    - 具备一定的 Rust 语言基础，能看懂并模仿现有代码即可
    - 熟悉操作系统原理与简易实现
    - 具有基础英文阅读和写作能力
-9. 相关的开源软件仓库列表：
+8. 相关的开源软件仓库列表：
    - https://github.com/rcore-os/zCore （zCore 仓库）
    - https://rcore-os.github.io/zCore/zircon_object （zCore 代码文档）
    - https://fuchsia.dev/fuchsia-src/reference （Zircon 官方文档）
@@ -165,21 +127,20 @@
 ### zCore 的星光/SiFive/树莓派等开发板和外设支持
 
 1. 项目标题：zCore 的星光/SiFive开发板支持
-2. [zCore 的星光/SiFive开发板支持:项目模板](https://github.com/LearningOS/zCore)（注：由于有Github LFS，不能设置为classroom）
-3. 项目描述：zCore 是用 Rust 实现的支持协程/异步等新机制的操作系统，目前zCore的实现已经初步支持 x86_64/RISC-V 64/AArch64。zCore需要继续完善相关驱动和系统调用。
-4. 项目难度：中（适合完成了lab1-5，并希望在系统类企业找到一份OS底层研发工作，或提升软件工程能力的同学）
-5. 项目社区导师：肖络元 github id: shzhxh    weichat id: xiaoxiaoluckyard
-6. 项目社区导师：杨德睿 github id:YdrMaster  weichat id: ydrdwx
-7. 项目产出要求：
+2. 项目描述：zCore 是用 Rust 实现的支持协程/异步等新机制的操作系统，目前zCore的实现已经初步支持 x86_64/RISC-V 64/AArch64。zCore需要继续完善相关驱动和系统调用。
+3. 项目难度：中（适合完成了lab1-5，并希望在系统类企业找到一份OS底层研发工作，或提升软件工程能力的同学）
+4. 项目社区导师：肖络元 github id: shzhxh    weichat id: xiaoxiaoluckyard
+5. 项目社区导师：杨德睿 github id:YdrMaster  weichat id: ydrdwx
+6. 项目产出要求：
    - 能够在某开发板上比较稳定地运行 zCore
    - （可选）能够在 Linux 系统上运行 zCore libos
      这个相对比较简单，因为基于 Linux host OS，不会涉及太多指令级别的改动。可以作为入门练手。
 
-8. 项目技术要求：
+7. 项目技术要求：
    - 熟悉 Rust 语言
    - 熟悉 RISC-V64 指令集，或做过其它平台的底层移植工作
    - 熟悉K210的开发经验
-9. 相关的开源软件仓库列表：
+8. 相关的开源软件仓库列表：
    - https://github.com/rcore-os/zCore （zCore 仓库）
    - https://github.com/rcore-os/rCore （rCore 仓库，支持RISC-V）
    - https://github.com/kendryte/kendryte-doc-datasheet
@@ -189,18 +150,17 @@
 ### rCore 到 zCore 的功能迁移
 
 1. 项目标题：rCore 到 zCore 的功能迁移
-2. [rCore 到 zCore 的功能迁移:项目模板](https://github.com/LearningOS/zCore)（注：由于有Github LFS，不能设置为classroom）
-3. 项目描述：rCore 是用 Rust 语言实现的兼容 Linux 内核。它支持四种指令集，能够运行比较丰富的应用程序。但是随着时间的积累，rCore 的代码越堆越多，很多内部实现缺乏推敲，需要优化和重构。后来我们从头开始实现了 zCore 项目，采用了更加清晰的分层结构，同时复用 Zircon 微内核的内核对象实现了 Linux 内核的部分功能（如内存管理和进程管理）。目前 zCore 中的 linux 模块已经能够运行基础的 Busybox 等小程序，但仍有大量原本 rCore 支持的功能没有实现。本项目希望将 rCore 的功能迁移到 zCore 当中，并借此机会进行重构。其中一些代码可以直接搬过来，剩下的可能需要调整适配（例如涉及到 async），还有一些可以直接基于 Zircon 内核对象进行实现（例如 epoll）。
-4. 项目难度：中（适合完成了lab1-5，并希望在系统类企业找到一份OS底层研发工作，或提升软件工程能力的同学）
-5. 项目社区导师：董峰  github id: workerwork  weichat id: Mr_dong-feng
-6. 项目社区导师：陈乐 github id: yuoo655    weichat id: Endagorion_
-7. 项目产出要求：
+2. 项目描述：rCore 是用 Rust 语言实现的兼容 Linux 内核。它支持四种指令集，能够运行比较丰富的应用程序。但是随着时间的积累，rCore 的代码越堆越多，很多内部实现缺乏推敲，需要优化和重构。后来我们从头开始实现了 zCore 项目，采用了更加清晰的分层结构，同时复用 Zircon 微内核的内核对象实现了 Linux 内核的部分功能（如内存管理和进程管理）。目前 zCore 中的 linux 模块已经能够运行基础的 Busybox 等小程序，但仍有大量原本 rCore 支持的功能没有实现。本项目希望将 rCore 的功能迁移到 zCore 当中，并借此机会进行重构。其中一些代码可以直接搬过来，剩下的可能需要调整适配（例如涉及到 async），还有一些可以直接基于 Zircon 内核对象进行实现（例如 epoll）。
+3. 项目难度：中（适合完成了lab1-5，并希望在系统类企业找到一份OS底层研发工作，或提升软件工程能力的同学）
+4. 项目社区导师：董峰  github id: workerwork  weichat id: Mr_dong-feng
+5. 项目社区导师：陈乐 github id: yuoo655    weichat id: Endagorion_
+6. 项目产出要求：
    - 能够在 zCore 上运行 rCore 支持的 Linux 程序：GCC，Nginx，Rustc 等
    - 对新迁移过来的代码，要求补充代码文档和必要的单元测试
-8. 项目技术要求：
+7. 项目技术要求：
    - 熟悉 Rust 语言
    - 熟悉 Linux 系统调用
-9. 相关的开源软件仓库列表：
+8. 相关的开源软件仓库列表：
    - https://github.com/rcore-os/zCore （zCore 仓库）
    - https://github.com/rcore-os/rCore （rCore 仓库）
    
