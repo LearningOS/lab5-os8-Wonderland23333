@@ -2,13 +2,15 @@ use super::id::RecycleAllocator;
 use super::{add_task, pid_alloc, PidHandle, TaskControlBlock};
 use crate::fs::{File, Stdin, Stdout};
 use crate::mm::{translated_refmut, MemorySet, KERNEL_SPACE};
-use crate::sync::{Condvar, Mutex, Semaphore, UPSafeCell};
+use crate::sync::{Condvar, LockType, Mutex, Semaphore, UPSafeCell};
 use crate::trap::{trap_handler, TrapContext};
+use alloc::collections::{BTreeMap, BTreeSet};
 use alloc::string::String;
 use alloc::sync::{Arc, Weak};
 use alloc::vec;
 use alloc::vec::Vec;
 use core::cell::RefMut;
+use core::cmp::max;
 
 pub struct ProcessControlBlock {
     // immutable
@@ -30,14 +32,11 @@ pub struct ProcessControlBlockInner {
     pub mutex_list: Vec<Option<Arc<dyn Mutex>>>,
     pub semaphore_list: Vec<Option<Arc<Semaphore>>>,
     pub condvar_list: Vec<Option<Arc<Condvar>>>,
-    /// whether deadlock detection is enabled
-    pub deadlock_detect: bool,
-
-    pub mutex_alloc: Vec<Option<usize>>, // [mutex_id] -> tid，用来表示各个锁的分配情况
-    pub mutex_request: Vec<Option<usize>>, // [tid] -> mutex_id，用来表示各个线程对锁的请求情况
-    pub sem_avail: Vec<usize>,           // [mid] -> num，表示各个信号量的可用数量
-    pub sem_alloc: Vec<Vec<usize>>, // [tid] -> {sid, num}，用来表示各个信号量给每个线程的分配情况
-    pub sem_request: Vec<Option<usize>>, // [tid] -> sid，表示各个线程对信号量的请求情况
+    pub mutex_alloc: Vec<Option<usize>>, // 记录拥有 mutex_list[i] 的 thread
+    pub mutex_request: Vec<Option<usize>>, // 记录 thread 请求的 mutex id
+    pub sem_alloc: Vec<Vec<usize>>,      // 记录拥有 semaphore_list[i] 的 thread
+    pub sem_request: Vec<Option<usize>>, // 记录 thread 请求的 semaphore id
+    pub enable_lock_detect: bool,
 }
 
 impl ProcessControlBlockInner {
@@ -69,6 +68,126 @@ impl ProcessControlBlockInner {
 
     pub fn get_task(&self, tid: usize) -> Arc<TaskControlBlock> {
         self.tasks[tid].as_ref().unwrap().clone()
+    }
+
+    pub fn check_dead_lock(&self, lock_type: LockType, id: usize) -> bool {
+        match lock_type {
+            LockType::Mutex => {
+                let mut Set: BTreeSet<usize> = BTreeSet::new();
+                Set.insert(self.mutex_request[id].unwrap());
+                let mut mutex_id = id;
+                while let Some(tid) = self.mutex_alloc[mutex_id] {
+                    if Set.contains(&tid) {
+                        // 找到循环
+                        return true;
+                    } else {
+                        Set.insert(tid);
+                        if let Some(mid) = self.mutex_request[tid] {
+                            mutex_id = mid;
+                        } else {
+                            // 无循环
+                            return false;
+                        }
+                    }
+                }
+            }
+            LockType::Semaphore => {
+                let semaphore = self.semaphore_list[id].as_ref().unwrap().clone();
+                let semaphore_inner = semaphore.inner.exclusive_access();
+                if semaphore_inner.count > 0 {
+                    // 资源足够，无死锁
+                    return false;
+                }
+                drop(semaphore_inner);
+
+                let sem_num: usize = self.semaphore_list.len();
+                let max_tid = *self
+                    .sem_alloc
+                    .iter()
+                    .map(|sem_vec| sem_vec.iter().max().unwrap_or(&0))
+                    .max()
+                    .unwrap_or(&0);
+
+                let max_tid = max(
+                    max_tid,
+                    self.sem_request
+                        .iter()
+                        .map(|&item| item.unwrap_or(0))
+                        .max()
+                        .unwrap_or(0),
+                );
+
+                println!("======> max_tid {}", max_tid);
+
+                let mut Allocation = vec![vec![0 as usize; sem_num]; max_tid + 1];
+                let mut Request = vec![vec![0 as usize; sem_num]; max_tid + 1];
+                let mut Finish: Vec<bool> = vec![false; max_tid + 1];
+
+                for i in 0..sem_num {
+                    for &tid in &self.sem_alloc[i] {
+                        Allocation[tid][i] = 1;
+                    }
+                }
+
+                for pos in 0..sem_num {
+                    if let Some(tid) = self.sem_request[pos] {
+                        Request[tid][pos] = 1;
+                    }
+                }
+
+                // 各个资源的数量
+                let mut Work: Vec<usize> = self
+                    .semaphore_list
+                    .iter()
+                    .map(|opt| {
+                        if let Some(sem) = opt {
+                            let count = sem.inner.exclusive_access().count;
+                            max(count, 0) as usize
+                        } else {
+                            0 as usize
+                        }
+                    })
+                    .collect();
+
+                // println!("Allocation \n{:#?}", Allocation);
+                // println!("Request\n{:#?}", Request);
+                // println!("Work\n{:#?}", Work);
+
+                'outer: loop {
+                    let mut index = usize::MAX;
+                    'inner: for i in 0..=max_tid {
+                        if !Finish[i]
+                            && Work
+                                .iter()
+                                .enumerate()
+                                .all(|(pos, &num)| num >= Request[i][pos])
+                        {
+                            index = i;
+                            break 'inner;
+                        }
+                    }
+
+                    if index == usize::MAX {
+                        break 'outer;
+                    }
+
+                    Finish[index] = true;
+                    for j in 0..sem_num {
+                        Work[j] += Allocation[index][j];
+                    }
+                }
+
+                println!(
+                    "=======> {}",
+                    Finish.iter().filter(|&&item| { item == false }).count()
+                );
+                return Finish.iter().any(|&item| item == false);
+            }
+            _ => {
+                return false;
+            }
+        };
+        false
     }
 }
 
@@ -105,12 +224,11 @@ impl ProcessControlBlock {
                     mutex_list: Vec::new(),
                     semaphore_list: Vec::new(),
                     condvar_list: Vec::new(),
-                    deadlock_detect: false,
                     mutex_alloc: Vec::new(),
                     mutex_request: Vec::new(),
-                    sem_avail: Vec::new(),
                     sem_alloc: Vec::new(),
                     sem_request: Vec::new(),
+                    enable_lock_detect: false,
                 })
             },
         });
@@ -136,13 +254,6 @@ impl ProcessControlBlock {
         // add main thread to the process
         let mut process_inner = process.inner_exclusive_access();
         process_inner.tasks.push(Some(Arc::clone(&task)));
-        process_inner.mutex_request.push(None);
-        process_inner.sem_request.push(None);
-        let sem_len = process_inner.sem_avail.len();
-        process_inner.sem_alloc.push(vec![0; sem_len]);
-
-        assert!(process_inner.semaphore_list.len() == process_inner.sem_avail.len());
-        assert!(process_inner.tasks.len() == process_inner.sem_request.len());
         drop(process_inner);
         // add main thread to scheduler
         add_task(task);
@@ -210,7 +321,6 @@ impl ProcessControlBlock {
     pub fn fork(self: &Arc<Self>) -> Arc<Self> {
         let mut parent = self.inner_exclusive_access();
         assert_eq!(parent.thread_count(), 1);
-        let deadlock_detect = parent.deadlock_detect;
         // clone parent's memory_set completely including trampoline/ustacks/trap_cxs
         let memory_set = MemorySet::from_existed_user(&parent.memory_set);
         // alloc a pid
@@ -240,12 +350,11 @@ impl ProcessControlBlock {
                     mutex_list: Vec::new(),
                     semaphore_list: Vec::new(),
                     condvar_list: Vec::new(),
-                    deadlock_detect,
                     mutex_alloc: Vec::new(),
                     mutex_request: Vec::new(),
-                    sem_avail: Vec::new(),
                     sem_alloc: Vec::new(),
                     sem_request: Vec::new(),
+                    enable_lock_detect: false,
                 })
             },
         });
@@ -268,13 +377,6 @@ impl ProcessControlBlock {
         // attach task to child process
         let mut child_inner = child.inner_exclusive_access();
         child_inner.tasks.push(Some(Arc::clone(&task)));
-        child_inner.mutex_request.push(None);
-        child_inner.sem_request.push(None);
-        let sem_len = child_inner.sem_avail.len();
-        child_inner.sem_alloc.push(vec![0; sem_len]);
-
-        assert!(child_inner.semaphore_list.len() == child_inner.sem_avail.len());
-        assert!(child_inner.tasks.len() == child_inner.sem_request.len());
         drop(child_inner);
         // modify kernel_stack_top in trap_cx of this thread
         let task_inner = task.inner_exclusive_access();
@@ -307,12 +409,11 @@ impl ProcessControlBlock {
                     mutex_list: Vec::new(),
                     semaphore_list: Vec::new(),
                     condvar_list: Vec::new(),
-                    deadlock_detect: false,
                     mutex_alloc: Vec::new(),
                     mutex_request: Vec::new(),
-                    sem_avail: Vec::new(),
                     sem_alloc: Vec::new(),
                     sem_request: Vec::new(),
+                    enable_lock_detect: false,
                 })
             },
         });

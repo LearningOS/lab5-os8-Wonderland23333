@@ -11,42 +11,15 @@
 - [陈兴的每日学习实践的过程记录](https://github.com/GCYYfun/DailySchedule)
 
 
-## 日程：第一周：OS相关技术讲解与学习（7天）
-- 题目：CoreDebugger：支持Rust语言的源代码级内核调试工具，报告人：陈志扬，时间 2022.07.31 9:00(周日上午)
-- 题目：zCore结构和核心组件，报告人：张译仁，时间：2022.08.01 20:30(周一晚上)
-- 题目：操作系统多核启动，报告人：杨德睿，时间：2022.08.02 20:30(周二晚上)
-- 题目：实现zCore syscall，报告人：董峰，时间：2022.08.03 20:30(周三晚上)
-- 题目：zCore网络框架，报告人：萧络元，时间：2022.08.03 20:30(周四晚上)
-- 题目：zCore单元测试框架，报告人：石振兴，时间：2022.08.05 20:30(周五晚上)
+## 日程：第一周：zCore讲解与学习（7天）
+- zCore结构和核心组件
+- zCore系统调用
+- zCore硬件移植与驱动开发
+- zCore应用开发
 
-## 日程：第二~第四周：操作系统研究与探索项目 (34天)
+## 日程：第二~第四周：rCore/zCore研究项目 (34天)
 目前设置了多个项目，学生可选择参加下面的项目，指导老师制定以周为单位的项目研究计划。
 
-#### 模块化的 rCore-Tutorial-v3
-
-1. 项目标题：模块化的 rCore-Tutorial-v3
-2. 项目描述：rCore-Tutorial-v3 是一套简洁，易于上手的教程，但是目前代码将不同章节用分支隔离的组织形式导致前一章实验的成果很难迁移到后一章，且若要修改某一章的实现，就需要手动同步到后续所有章节。我们希望能发挥 Rust 语言 workspace/crates/traits 的先进设计理念，重构rCore-Tutorial，将学习时对仓库的操作变为以下形式：
-
-   | 操作          | 使用 git 分支        | 使用 crate
-   | ------------ | ------------------- | ---------------
-   | 学习另一个章节 | 切换分支             | 修改 workspace（即切换相关 crates）
-   | 做课后实验     | 切换到 lab 分支写代码 | 封装一个 crate 加入 workspace
-
-   这样操作系统将以模块化/Traits的形式呈现给同学，同学按照模块化/Traits实现的方法来完成实验。实验的内容也可随之灵活调整。
-
-3. 项目难度：中（适合完成了lab1-5，熟悉 Rust workspace/crates/traits 的同学）
-4. 项目社区导师：杨德睿 github id:YdrMaster weichat id: ydrdwx ； 许善朴 github id: xushanpu123   weichat id: bitmeet520
-5. 项目产出要求：
-
-   项目应该将现有的 rCore-Tutorial-v3 变得模块化。形式包括：
-   - 章节模块化：所有章节不再被 git 分支隔离开，而是只有逻辑上的隔离关系，后一章节能够以依赖库的形式继承前一章节的成果
-   - 实现模块化：能在所有章节中复用的代码形成单独的 crate 甚至 package，crates之间在调用方面有层次依赖关系, crates的粒度尽量小。
-   - 系统调用接口模块化：系统调用的分发封装到一个 crate。使得添加系统调用的模式不是为某个 match 增加分支，而是实现一个分发库要求的 trait 并将实例传递给分发库
-
-8. 相关的开源软件仓库列表：
-   - https://github.com/theseus-os/Theseus （OS的目标不同，但在OS的设计上有部分内容与此相近）
-
-      Theseus is a modern OS written from scratch in Rust that explores 𝐢𝐧𝐭𝐫𝐚𝐥𝐢𝐧𝐠𝐮𝐚𝐥 𝐝𝐞𝐬𝐢𝐠𝐧, novel OS structure, and state management. It strives to close the semantic gap between compiler and hardware to maximally leverage the power of language safety, and thus shift OS responsibilities like resource management into the compiler.
 
 ### rCore-Tutorial-v3 进一步进阶/扩展
 1. 项目标题：rCore-Tutorial-v3 进一步扩展
@@ -94,7 +67,6 @@
   - [用rust重新实现Linux的KVM](https://github.com/KaitoD/linux) 
   - [基于x86_64的rCore-Tutorial-v3](https://github.com/rcore-os/rCore-Tutorial-v3-x86_64)
   - [基于AARCH64的rCore-Tutorial-v3](https://github.com/rcore-os/rCore-Tutorial-v3-arm64)
-  - rCore-Tutorial-v3/zCore直接支持Rust std标准库：已完成的本科毕设，有初步结果
 ### zCore 的文档与单元测试完善
 
 1. 项目标题：zCore 的文档与单元测试完善
@@ -188,26 +160,3 @@
    - https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials （树莓派上的 Rust OS 教程）
    - https://github.com/siemens/jailhouse （基于 Linux module 的 Hypervisor）
 
-
-### 面向 Rust-based OS的vscode 动态调试工具
-
-1. 项目标题：面向 Rust-based OS的vscode 动态调试工具
-2. 项目描述：方便的源代码级调试工具，对监测程序运行状态和理解程序的逻辑十分重要；高效的Rust语言跟踪能力，是Rust操作系统内核开发的必要工具，对基于Rust的操作系统教学和实验很有帮助。然而现有RISC-V、Rust实验环境搭建成本高，上手难度大，不利于学习与开发工作。本项目拟实现一种基于网页访问的在线实验系统，提供方便、高效的手段实现在QEMU和RISC-V开发板上的Rust教学操作系统的源代码调试。
-3. 项目难度：中（适合完成了lab1-5，熟悉typescript, 了解vscode plugin，并希望能够较快进入更实际一些的OS能力训练或做OS方向研究的同学）
-4. 项目社区导师：
-   陈志扬：github id: chenzhiy2001    weichat id: untilthedayibecome
-   吴竞邦：github id: wujingbang   weichat id: wujingb33
-
-5. . 项目产出要求：
-   - 能够在vscode上动态调试Rust-based OS && APP in OS(比如rcore，zcore等)
-   - 形成vscode插件
-   - 提供使用说明和设计实现文档
-6. 项目技术要求：
-   - 熟悉 vscode 插件开发
-   - 了解 VS Code的 Debug Adapter 协议
-   - 了解QEMU 中的 gdbserver 与 gdb之间的通信协议
-   - 熟悉 typescript开发
-7. 相关的开源软件仓库列表：
-   - https://github.com/chenzhiy2001/code-debug
-
-注：欢迎进入第二阶段的同学提出自己感兴趣的题目，并尽快联系助教或老师进行立项。
